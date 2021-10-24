@@ -36,13 +36,20 @@ airflow scheduler ## activate airfow scheduler to run DAGs
 ```
 
 ### Construct data pipeline with Airflow
-One example of data pipeline (one DAGs) - let follow below steps and make data pipeline
-- creating table -> is-api-available -> extending -> processing-use -> 
-- what is it? when new user comes in, sense that and process and store user info to destination (?)
+Let's follow below steps and make a data pipeline (one DAGs)
+- A data pipeline we are going to build is about getting user info through api, processing that info, and fetching the info with proper schema into sqlite db
+- It contains several operators, which is 
+  - creating table
+  - is-api-available
+  - extracting user
+  - processing user-info
+  - storing user
+- Also consider task dependency and backfill/catchup method
 
-#### 1) creating table
-- make python script user_processing.py in dags folder
-- let create table using sqlite operator in user_processing.py
+#### 1) creating table (SqliteOperator)
+At first, create table where the final processed data will be stored
+- Make python script user_processing.py in dags folder
+- Let create table using sqlite operator in user_processing.py
 ```
 from airflow.models import DAG
 from airflow.providers.sqlite.operators.sqlite import SqliteOperator
@@ -71,26 +78,30 @@ with DAG('user_processing', schedule_interval='@daily', default_args=default_arg
             '''
     )
 ```
-- set sqlite connection on Airflow Web UI
+- To run the above dag scripts, install airflow provider packages
+```
+pip install apache-airflow-providers-sqlite 
+## install airflow provider of sqlite. refer airflow doc. may already be installed from intial installing Airflow..
+```
+
+- Make a new sqlite connection named 'db_sqlite' on Airflow Web UI
+
+- After that, do test airflow tasks!
 
 ```
-pip install apache-airflow-providers-sqlite ## install airflow provider of sqlite. refer airflow doc. may already be installed from intial installing Airflow..
-# next, make a new sqltie connection named 'db_sqlite' in Airflow
+airflow tasks test user_processing creating_table 2020-01-01
 ```
 
-- after that, do test airflow tasks!
-
-`airflow tasks test user_processing creating_table 2020-01-01`
-
-- one more things to do just for check again
+- One more things to do just for check again
 ```
 sqlite3 airflow.db ## connect to sqlite3 in airflow.db
 sqlite>.tables; ## see the tables in airflow.db in sqlite cmd
 sqlite>select * form users; ## test query in sqlite cmd
 ```
 
-#### 2) is_api_available
-- add HttpSensor Operator in existing python script like below
+#### 2) is_api_available (HttpSensor)
+Add sensor to check whether api response is valid
+- Add HttpSensor in existing python script like below
 
 ```
 from airflow.providers.http.sensors.http import HttpSensor
@@ -104,8 +115,43 @@ with DAG('user_processing', schedule_interval='@daily', default_args=default_arg
         endpoint='api/'
     )
 ```
-- Like 1) step, install airflow provider of Http and add new connection of Http api communication from Airflow Web connection configuration
+- Like 1) creating table step, install airflow provider of Http and add new connection of Http api communication from Airflow Web UI
+- Remember test a task
+```
+airflow tasks test user_processing is_api_available 2020-01-01
+```
 
-#### 3) 
+#### 3) extracting user (SimpleHttpOperator)
+Get user information through API
+- Add SimpleHttpOperator in existing `user_processing.py` dag script
+- Install airflow provider packages and add new connection on Airflow Web UI if need
+- Test a task
 
+#### 4) processing user-info (PythonOperator)
+Process user information into a proper data with schema
+- Add PythonOperator in existing `user_processing.py` dag script
+- Define python function refered by PythonOperator
+- Since PythonOperator is pre-installed packages, don't need to install the packages. And also it does not need to configure a new connection.
+- Test a task
+
+#### 5) storing user (BashOperator)
+Transfer process data into sqlite3 of airflow.db
+- Add BashOperator in existing `user_processing.py` dag script
+- Like PythonOperator, it also does not need to install any packages neither configure a connection
+- Test a task
+
+#### Consider task dependency and backfill/catchup method
+There are several ways to express task dependency, and here show one way
+- Add a explicit relations on dependency in a below dag python script
+```
+creating_table >> is_api_available >> extracting_user >> processing_user >> storing_user
+```
+- See task dependency of a dag on Airflow Web UI (click a certain dag and see graph view)
+
+Backfill/catchup method
+- A dag has two components on schedulling: start_date (or time) and frequency (e.g. daily or hourly)
+- If set `catchup=True` then Airflow will run several dag runs from start_time and catches up until the latest time based on frequency being setted up
+- In practice, it needs to delete before dag run to work catch-up jobs
+
+#### Refer to dags/user_processing.py as a final dag script
 
