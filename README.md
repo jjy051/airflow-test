@@ -36,7 +36,7 @@ airflow scheduler ## activate airfow scheduler to run DAGs
 ```
 
 ### Construct data pipeline with Airflow
-Let's follow below steps and make a data pipeline (one DAGs)
+Let's follow below steps and make a data pipeline (one DAG)
 - A data pipeline we are going to build is about getting user info through api, processing that info, and fetching the info with proper schema into sqlite db
 - It contains several operators, which is 
   - creating table
