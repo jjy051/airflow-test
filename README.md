@@ -40,7 +40,7 @@ One example of data pipeline (one DAGs) - let follow below steps and make data p
 - creating table -> is-api-available -> extending -> processing-use -> 
 - what is it? when new user comes in, sense that and process and store user info to destination (?)
 
-1) create table
+#### 1) creating table
 - make python script user_processing.py in dags folder
 - let create table using sqlite operator in user_processing.py
 ```
@@ -85,10 +85,27 @@ pip install apache-airflow-providers-sqlite ## install airflow provider of sqlit
 - one more things to do just for check again
 ```
 sqlite3 airflow.db ## connect to sqlite3 in airflow.db
-sqlite>.tables; ## see the tables in airflow.dbb
-sqlite>select * form users; ## test query
+sqlite>.tables; ## see the tables in airflow.db in sqlite cmd
+sqlite>select * form users; ## test query in sqlite cmd
 ```
 
-2) 
+#### 2) is_api_available
+- add HttpSensor Operator in existing python script like below
+
+```
+from airflow.providers.http.sensors.http import HttpSensor
+
+with DAG('user_processing', schedule_interval='@daily', default_args=default_args, catchup=False) as dag:
+    ## leave out before sqliteoperator script for simplicity
+    
+    is_api_available = HttpSensor(
+        task_id='is_api_available',
+        http_conn_id = 'user_api',
+        endpoint='api/'
+    )
+```
+- Like 1) step, install airflow provider of Http and add new connection of Http api communication from Airflow Web connection configuration
+
+#### 3) 
 
 
