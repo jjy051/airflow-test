@@ -7,7 +7,7 @@ This is a practice on airflow, which is
 
 ### First of all, build virtual env using virtualbox
 This is optional but highly recommended
-- It is very important to make sure that development env is independent and has no problem with other env setting conflict
+- It is very important to make sure that development env is independent and has no conflict with other env setting
 
 
 ### Next, make python virtual env on proper directory
