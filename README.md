@@ -29,9 +29,11 @@ pip3 install apache-airflow==2.1.0 \ ## airflow version depends on when you inst
 Airflow Inital Setting
 ```
 airflow db init ## airflow metadata initializing
-airflow webserver ## launch web server. after that we can access airflow web server through localhost:8080
-
 airflow users create -u admin -p admin -f jaeyoung -l jang -r Admin -e admin@airflow.com ## create admin user
+
+airflow webserver ## launch web server. after that we can access airflow web server through localhost:8080
+airflow scheduler ## activate airfow scheduler to run DAGs
+
 ```
 
 ### Construct data pipeline with Airflow
