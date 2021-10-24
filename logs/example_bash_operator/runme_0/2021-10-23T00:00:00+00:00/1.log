@@ -1,0 +1,27 @@
+[2021-10-24 03:17:17,981] {taskinstance.py:876} INFO - Dependencies all met for <TaskInstance: example_bash_operator.runme_0 2021-10-23T00:00:00+00:00 [queued]>
+[2021-10-24 03:17:17,991] {taskinstance.py:876} INFO - Dependencies all met for <TaskInstance: example_bash_operator.runme_0 2021-10-23T00:00:00+00:00 [queued]>
+[2021-10-24 03:17:17,992] {taskinstance.py:1067} INFO - 
+--------------------------------------------------------------------------------
+[2021-10-24 03:17:17,992] {taskinstance.py:1068} INFO - Starting attempt 1 of 1
+[2021-10-24 03:17:17,992] {taskinstance.py:1069} INFO - 
+--------------------------------------------------------------------------------
+[2021-10-24 03:17:18,012] {taskinstance.py:1087} INFO - Executing <Task(BashOperator): runme_0> on 2021-10-23T00:00:00+00:00
+[2021-10-24 03:17:18,014] {standard_task_runner.py:52} INFO - Started process 7465 to run task
+[2021-10-24 03:17:18,027] {standard_task_runner.py:76} INFO - Running: ['airflow', 'tasks', 'run', 'example_bash_operator', 'runme_0', '2021-10-23T00:00:00+00:00', '--job-id', '7', '--pool', 'default_pool', '--raw', '--subdir', '/home/airflow/sandbox/lib/python3.8/site-packages/airflow/example_dags/example_bash_operator.py', '--cfg-path', '/tmp/tmphmvx4uhl', '--error-file', '/tmp/tmpgheez6ga']
+[2021-10-24 03:17:18,028] {standard_task_runner.py:77} INFO - Job 7: Subtask runme_0
+[2021-10-24 03:17:18,093] {logging_mixin.py:104} INFO - Running <TaskInstance: example_bash_operator.runme_0 2021-10-23T00:00:00+00:00 [running]> on host airflowvm
+[2021-10-24 03:17:18,161] {taskinstance.py:1280} INFO - Exporting the following env vars:
+AIRFLOW_CTX_DAG_OWNER=airflow
+AIRFLOW_CTX_DAG_ID=example_bash_operator
+AIRFLOW_CTX_TASK_ID=runme_0
+AIRFLOW_CTX_EXECUTION_DATE=2021-10-23T00:00:00+00:00
+AIRFLOW_CTX_DAG_RUN_ID=scheduled__2021-10-23T00:00:00+00:00
+[2021-10-24 03:17:18,162] {subprocess.py:52} INFO - Tmp dir root location: 
+ /tmp
+[2021-10-24 03:17:18,163] {subprocess.py:63} INFO - Running command: ['bash', '-c', 'echo "example_bash_operator__runme_0__20211023" && sleep 1']
+[2021-10-24 03:17:18,170] {subprocess.py:75} INFO - Output:
+[2021-10-24 03:17:18,173] {subprocess.py:79} INFO - example_bash_operator__runme_0__20211023
+[2021-10-24 03:17:19,176] {subprocess.py:83} INFO - Command exited with return code 0
+[2021-10-24 03:17:19,210] {taskinstance.py:1184} INFO - Marking task as SUCCESS. dag_id=example_bash_operator, task_id=runme_0, execution_date=20211023T000000, start_date=20211024T031717, end_date=20211024T031719
+[2021-10-24 03:17:19,238] {taskinstance.py:1245} INFO - 0 downstream tasks scheduled from follow-on schedule check
+[2021-10-24 03:17:19,251] {local_task_job.py:151} INFO - Task exited with return code 0
