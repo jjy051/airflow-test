@@ -155,3 +155,10 @@ Backfill/catchup method
 
 #### Refer to dags/user_processing.py as a final dag script
 
+---
+
+### Other Notes
+- Configuration
+  - Executor (sequential, local, celery)
+  - Concurrency (parallelism, dag_concurrency, max_active_runs_per_dag)
+- TaskGroup
