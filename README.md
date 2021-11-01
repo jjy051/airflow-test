@@ -157,8 +157,49 @@ Backfill/catchup method
 
 ---
 
-### Other Notes
-- Configuration
-  - Executor (sequential, local, celery)
-  - Concurrency (parallelism, dag_concurrency, max_active_runs_per_dag)
-- TaskGroup
+### Configuration
+DataBases (SQLite, Postgresql)
+- SQLite access only one writer at a time
+- In contrast, Postgresql access multiple reader and writer at a time
+  - thus, you need to change a database supporting multiple reader/writer access when using local or celery executor
+
+Executor (sequential, local, celery)
+- SequentialExecutor does not support to process multiple tasks in parallel
+- LocalExecutor can process multiple tasks in parallel
+- CeleryExecutor can allow multiple tasks in parallel as much as you want through distributing tasks to worker nodes
+
+Concurrency (parallelism, dag_concurrency, max_active_runs_per_dag)
+- parallelism is the maximum number of tasks processing at a time
+- dag_concurrency is the maximum number of running dags at a time
+- max_active_runs_per_dag means the maximum number of dag runs (within a same dag) at a time
+
+### Advanced Concepts
+TaskGroup
+- Rather than SubDags, TaskGroup is a very useful and powerful concept to grouping complex tasks
+- In production, it is really commonly used
+- **Refer to dags/parallel_dag.py**
+
+Exchanging Data
+- Using external storage to communicate data between tasks
+  - A task can refer a data from other tasks through external storage like s3 (or other DB server)
+  - It needs to build a certain hook (connection) to push/pull data to external storage
+
+
+- Using interal default storage (XCOM)
+  - If data is a small, we can use a default interal storage for a communication
+  - **Refer to dags/xcom_dag.py for a XCOM use case**
+
+Branch, Condition
+- To process conditoined data pipeline, it sometimes needs express operator branch whether certain operators start or skip based on criteria
+- BranchPythonOperator is a good package to do that
+- **Refer to dags/xcom_dag.py**
+
+
+Trigger Rule
+- There are several trigger rules
+  - all_success (default), all_failed, one_failed and so on
+  - https://airflow.apache.org/docs/apache-airflow/1.10.5/concepts.html?highlight=trigger%20rule
+- **Refer to dags/trigger_rule.py**
+
+
+### 
